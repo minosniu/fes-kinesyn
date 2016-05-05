@@ -1,26 +1,42 @@
 function Period = FindInterPeriod(Data)
 fs_kine = 120;
 Data.Time = Data.Frame/fs_kine;
-%% get onset & offset
-l = length(Data.LeftElbowFlex);
-vel(1:l-1) = diff(Data.LeftElbowFlex)*fs_kine;
-vel(l) = vel(l-1);
-
+%% filter design
 [b,a] = butter(3,5/(fs_kine/2),'low');
-vel = filtfilt(b,a,vel);
-
-% acc(1:l-1) = diff(vel)*fs_kine;
-% acc(l) = acc(l-1);
-
-np = find(vel == min(vel));
-z1 = find(vel(1:np) >= 0);
-z2 = find(vel((np+1):end) >= 0);
-list = z1(end):min(l,(z2(1)+np));
-
-list1 = find(vel(list) <= 0.1 * min(vel));
-period = (list1(1)+list(1)-1):(list1(end)+list(1)-1);
-onset = period(1)-30;
-offset = period(end)+80;
+%% get velocity
+l_period = length(Data.Frame);
+% vel of hand x
+Data.Vel_hand_x(1:l_period-1) = diff(Data.L_hand_x)*fs_kine;
+Data.Vel_hand_x(l_period) = Data.Vel_hand_x(l_period-1);
+Data.Vel_filt_hand_x = filtfilt(b,a,Data.Vel_hand_x);
+% vel of hand y
+Data.Vel_hand_y(1:l_period-1) = diff(Data.L_hand_y)*fs_kine;
+Data.Vel_hand_y(l_period) = Data.Vel_hand_y(l_period-1);
+Data.Vel_filt_hand_y = filtfilt(b,a,Data.Vel_hand_y);
+% vel of hand xy
+Data.Vel_hand_xy = ((Data.Vel_hand_x).^2+(Data.Vel_hand_y).^2 ).^0.5;
+Data.Vel_filt_hand_xy = filtfilt(b,a,Data.Vel_hand_xy);
+% vel of elbow flexion
+Data.Vel_elbow(1:l_period-1) = diff(Data.LeftElbowFlex)*fs_kine;
+Data.Vel_elbow(l_period) = Data.Vel_elbow(l_period-1);
+Data.Vel_filt_elbow = filtfilt(b,a,Data.Vel_elbow);
+% vel of shoulder flexion
+Data.Vel_sh_flex(1:l_period-1) = diff(Data.LeftShoulderFlex)*fs_kine;
+Data.Vel_sh_flex(l_period) = Data.Vel_sh_flex(l_period-1);
+Data.Vel_filt_sh_flex = filtfilt(b,a,Data.Vel_sh_flex);
+% vel of shoulder abduction
+Data.Vel_sh_abduct(1:l_period-1) = diff(Data.LeftShoulderAbduction)*fs_kine;
+Data.Vel_sh_abduct(l_period) = Data.Vel_sh_abduct(l_period-1);
+Data.Vel_filt_sh_abduct = filtfilt(b,a,Data.Vel_sh_abduct);
+%% get onset & offset
+vel = Data.Vel_filt_hand_xy;
+np = find(vel == max(vel));
+pre_list = find(vel(1:np) <= 0.1 * max(vel));
+aft_list = find(vel((np+1):end) <= 0.1 * max(vel));
+time_ini = max(1,pre_list(end));
+time_ter = min(np+aft_list(1),l_period);
+onset = time_ini-30;
+offset = time_ter+80;
 %% get Period
 Period.Frame = Data.Frame(onset:offset);
 Period.Time = Data.Time(onset:offset) - Data.Time(onset);
@@ -39,28 +55,10 @@ Period.L_hand_x = Data.L_hand_x(onset:offset);
 Period.L_hand_y = Data.L_hand_y(onset:offset);
 Period.L_hand_z = Data.L_hand_z(onset:offset);
 Period.Trigger = Data.Trigger(onset:offset);
-%% get velocity
-l_period = length(Period.Frame);
-% vel of hand x
-Period.Vel_hand_x(1:l_period-1) = diff(Period.L_hand_x)*fs_kine;
-Period.Vel_hand_x(l_period) = Period.Vel_hand_x(l_period-1);
-Period.Vel_filt_hand_x = filtfilt(b,a,Period.Vel_hand_x);
-% vel of hand y
-Period.Vel_hand_y(1:l_period-1) = diff(Period.L_hand_y)*fs_kine;
-Period.Vel_hand_y(l_period) = Period.Vel_hand_y(l_period-1);
-Period.Vel_filt_hand_y = filtfilt(b,a,Period.Vel_hand_y);
-% vel of hand xy
-Period.Vel_filt_hand_xy = ((Period.Vel_filt_hand_x).^2+(Period.Vel_filt_hand_y).^2 ).^0.5;
-% vel of elbow flexion
-Period.Vel_elbow(1:l_period-1) = diff(Period.LeftElbowFlex)*fs_kine;
-Period.Vel_elbow(l_period) = Period.Vel_elbow(l_period-1);
-Period.Vel_filt_elbow = filtfilt(b,a,Period.Vel_elbow);
-% vel of shoulder flexion
-Period.Vel_sh_flex(1:l_period-1) = diff(Period.LeftShoulderFlex)*fs_kine;
-Period.Vel_sh_flex(l_period) = Period.Vel_sh_flex(l_period-1);
-Period.Vel_filt_sh_flex = filtfilt(b,a,Period.Vel_sh_flex);
-% vel of shoulder abduction
-Period.Vel_sh_abduct(1:l_period-1) = diff(Period.LeftShoulderAbduction)*fs_kine;
-Period.Vel_sh_abduct(l_period) = Period.Vel_sh_abduct(l_period-1);
-Period.Vel_filt_sh_abduct = filtfilt(b,a,Period.Vel_sh_abduct);
+Period.Vel_filt_hand_x = Data.Vel_filt_hand_x(onset:offset);
+Period.Vel_filt_hand_y = Data.Vel_filt_hand_y(onset:offset);
+Period.Vel_filt_hand_xy = Data.Vel_filt_hand_xy(onset:offset);
+Period.Vel_filt_elbow = Data.Vel_filt_elbow(onset:offset);
+Period.Vel_filt_sh_flex = Data.Vel_filt_sh_flex(onset:offset);
+Period.Vel_filt_sh_abduct = Data.Vel_filt_sh_abduct(onset:offset);
 end
