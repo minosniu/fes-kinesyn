@@ -9,8 +9,7 @@ TIME = ['AFT'; 'PRE'; 'IME'];
 SIDE = ['L'; 'R'];
 TASK = ['LR'; 'FR'];
 
-root = 'D://FES2015//Kinematics_Analysis';
-root = '//Users//minosniu//Code//Kinematics_Analysis';
+root = 'D://Code//local_fes_kinesyn';
 for SN_name = 5
     for SN_type = 1
         for SN_time = 1:2
