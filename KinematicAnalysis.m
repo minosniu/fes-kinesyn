@@ -27,12 +27,22 @@ filename = cell(N,1);
 Legend = cell(N,1);
 Data = cell(N,1);
 Period = cell(N,1);
+L = zeros(N,1);
 for i = 1:N
     filename{i} = [Dir '//' ExpList{i}];
     Legend{i} = ExpList{i}(end-6:end-4);
-    Data{i} = ImportLeftData(filename{i});
-    Period{i} = FindInterPeriod(Data{i});
+    Data{i} = ImportExpData(filename{i});
+    Period{i} = FindInterPeriodNoSide(Data{i});
+    L(i) = length(Period{i}.Time);
 end
+L_max = max(L);
+N_longest = (L == L_max);
+Vel_hand_temp = zeros(N,L_max);
+for i = 1:N
+    Vel_hand_temp(i,1:L(i)) = Period{i}.Vel_filt_hand_xy;
+    Vel_hand_temp(i,L(i):L_max) = Vel_hand_temp(i,L(i));
+end
+Vel_hand_ave = mean(Vel_hand_temp);
 %% plot Vel_hand_x and Vel_hand_y
 hfig1           =   figure;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
@@ -115,7 +125,7 @@ set(hfig4, 'PaperUnits', 'inches');  %  'centimeters'
 set(hfig4, 'PaperPosition', [xLeft_i yTop_i xSize_i ySize_i]);
 hold on;
 for i = 1:N
-    plot(Period{i}.L_hand_x,Period{i}.L_hand_y,'Color',c_grey,'LineWidth',2);
+    plot(Period{i}.Hand_x,Period{i}.Hand_y,'Color',c_grey,'LineWidth',2);
 end
 ylim([0.1 0.60]);
 xlim([0.2 1.4]);
@@ -139,10 +149,12 @@ hold on;
 for i = 1:N
     plot(Period{i}.Time,Period{i}.Vel_filt_hand_xy,'Color',c_grey,'LineWidth',2);
 end
+hold on;
+plot(Period{N_longest}.Time,Vel_hand_ave,'Color','k','LineWidth',3);
 axis([0 Tmax Ymin_handxy Ymax_handxy])
 
 print(hfig5,'-depsc',[Figname 'handxy_velo.eps']);
 %%
-close all;
+% close all;
 
 end
