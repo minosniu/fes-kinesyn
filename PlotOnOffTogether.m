@@ -31,7 +31,32 @@ for i = 1:N
     Vel_hand_temp(i,L(i):L_max) = Vel_hand_temp(i,L(i));
 end
 Vel_hand_ave = mean(Vel_hand_temp);
+Vel_hand_std = std(Vel_hand_temp);
 %% plot hand xy
+% hfig           =   figure(1);
+% 
+% Ymin_handxy = 0-((Ymin_handx).^2+(Ymin_handy).^2).^0.5;
+% Ymax_handxy = ((Ymax_handx).^2+(Ymax_handy).^2).^0.5;
+% xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
+% ySize_i  = 6; % ¸ß11Ó¢´ç
+% xLeft_i  = 0;
+% yTop_i   = 0;
+% set(hfig, 'Units', 'inches');  %  'centimeters'
+% set(hfig, 'Position', [xLeft_i yTop_i xSize_i ySize_i]);
+% set(hfig, 'PaperUnits', 'inches');  %  'centimeters'
+% set(hfig, 'PaperPosition', [xLeft_i yTop_i xSize_i ySize_i]);
+% 
+% hold on;
+% for i = 1:N
+%     plot(Period{i}.Time,Period{i}.Vel_filt_hand_xy,'Color',TraColor(SN_type,:),'LineWidth',2);
+% end
+% hold on;
+% plot(Period{N_longest}.Time,Vel_hand_ave,'Color',VelColor(SN_type,:),'LineWidth',4);
+% axis([0 Tmax Ymin_handxy Ymax_handxy])
+% 
+% print(hfig,'-depsc',[Figname 'on_off_handxy_velo.eps']);
+% print(hfig,'-dbmp',[Figname 'on_off_handxy_velo.bmp']);
+%% ShadedErrorBar
 hfig           =   figure(1);
 
 Ymin_handxy = 0-((Ymin_handx).^2+(Ymin_handy).^2).^0.5;
@@ -44,13 +69,10 @@ set(hfig, 'Units', 'inches');  %  'centimeters'
 set(hfig, 'Position', [xLeft_i yTop_i xSize_i ySize_i]);
 set(hfig, 'PaperUnits', 'inches');  %  'centimeters'
 set(hfig, 'PaperPosition', [xLeft_i yTop_i xSize_i ySize_i]);
+lineProps = {'Color',VelColor(SN_type,:),'LineWidth',4};
 
 hold on;
-for i = 1:N
-    plot(Period{i}.Time,Period{i}.Vel_filt_hand_xy,'Color',TraColor(SN_type,:),'LineWidth',2);
-end
-hold on;
-plot(Period{N_longest}.Time,Vel_hand_ave,'Color',VelColor(SN_type,:),'LineWidth',4);
+shadedErrorBar(Period{N_longest}.Time,Vel_hand_ave,Vel_hand_std,lineProps);
 axis([0 Tmax Ymin_handxy Ymax_handxy])
 
 print(hfig,'-depsc',[Figname 'on_off_handxy_velo.eps']);
