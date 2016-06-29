@@ -1,4 +1,4 @@
-function KinematicAnalysis(Dir,Axisfile)
+function KinematicAnalysis(root,Dir,Axisfile)
 VelColor        =   [   0.08	0.17	0.55;   % dark blue
                         0.6     0.2     0;      % dark red
                         0       0.4     0;      % dark green
@@ -20,7 +20,7 @@ TraColor        =   [   0.08	0.07	0.95;   % blue
 c_grey = [0.7 0.7 0.7];
 ExpList = GetExpList(Dir);
 N = length(ExpList);
-Figname = [Dir(1:end-34) '//Figures//' Dir(end-16:end) '_'];
+Figname = [root '//Figures//' Dir(end-16:end) '_'];
 load(Axisfile);
 %% Load file and find the moving period
 filename = cell(N,1);
@@ -69,6 +69,7 @@ end
 axis([0 Tmax Ymin_handy Ymax_handy])
 
 print(hfig1,'-depsc',[Figname 'hand_velo.eps']);
+print(hfig1,'-dbmp',[Figname 'hand_velo.bmp']);
 %% plot elbow flexion
 hfig2           =   figure;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
@@ -87,6 +88,7 @@ end
 axis([0 Tmax Ymin_elbow Ymax_elbow])
 
 print(hfig2,'-depsc',[Figname 'elbow_velo.eps']);
+print(hfig2,'-dbmp',[Figname 'elbow_velo.bmp']);
 %% plot Vel_sh_flex and Vel_sh_abduct
 hfig3           =   figure;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
@@ -113,6 +115,7 @@ end
 axis([0 Tmax Ymin_shab Ymax_shab])
 
 print(hfig3,'-depsc',[Figname 'shoulder_velo.eps']);
+print(hfig3,'-dbmp',[Figname 'shoulder_velo.bmp']);
 %% plot trajec
 hfig4           =   figure;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
@@ -131,6 +134,7 @@ ylim([0.1 0.60]);
 xlim([0.2 1.4]);
 
 print(hfig4,'-depsc',[Figname 'arm_traj.eps']);
+print(hfig4,'-dbmp',[Figname 'arm_traj.bmp']);
 %% plot hand xy
 hfig5           =   figure;
 
@@ -154,6 +158,7 @@ plot(Period{N_longest}.Time,Vel_hand_ave,'Color','k','LineWidth',3);
 axis([0 Tmax Ymin_handxy Ymax_handxy])
 
 print(hfig5,'-depsc',[Figname 'handxy_velo.eps']);
+print(hfig5,'-dbmp',[Figname 'handxy_velo.bmp']);
 %%
 % close all;
 
