@@ -69,10 +69,10 @@ set(hfig, 'Units', 'inches');  %  'centimeters'
 set(hfig, 'Position', [xLeft_i yTop_i xSize_i ySize_i]);
 set(hfig, 'PaperUnits', 'inches');  %  'centimeters'
 set(hfig, 'PaperPosition', [xLeft_i yTop_i xSize_i ySize_i]);
-lineProps = {'Color',VelColor(SN_type,:),'LineWidth',4};
+lineProps = {'Color',VelColor(SN_type,:),'LineWidth',3};
 
 hold on;
-shadedErrorBar(Period{N_longest}.Time,Vel_hand_ave,Vel_hand_std,lineProps);
+shadedErrorBar(Period{N_longest}.Time,Vel_hand_ave,Vel_hand_std,lineProps,1);
 axis([0 Tmax Ymin_handxy Ymax_handxy])
 
 print(hfig,'-depsc',[Figname 'on_off_handxy_velo.eps']);
