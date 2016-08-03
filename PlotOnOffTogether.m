@@ -59,7 +59,7 @@ Vel_hand_std = std(Vel_hand_temp);
 %% ShadedErrorBar
 hfig           =   figure(1);
 
-Ymin_handxy = 0-((Ymin_handx).^2+(Ymin_handy).^2).^0.5;
+Ymin_handxy = -0.2;
 Ymax_handxy = ((Ymax_handx).^2+(Ymax_handy).^2).^0.5;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
 ySize_i  = 6; % ¸ß11Ó¢´ç
