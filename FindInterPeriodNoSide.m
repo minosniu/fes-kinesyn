@@ -33,8 +33,16 @@ vel = Data.Vel_filt_hand_xy;
 np = find(vel == max(vel));
 pre_list = find(vel(1:np) <= 0.1 * max(vel));
 aft_list = find(vel((np+1):end) <= 0.1 * max(vel));
-time_ini = max(1,pre_list(end));
-time_ter = min(np+aft_list(1),l_period);
+if isempty(pre_list)
+    time_ini = 31;
+else
+    time_ini = max(31,pre_list(end));
+end
+if isempty(aft_list)
+    time_ter = l_period-80;
+else
+    time_ter = min(np+aft_list(1),l_period-80);
+end
 onset = time_ini-30;
 offset = time_ter+80;
 %% get Period
