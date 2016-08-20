@@ -29,22 +29,29 @@ Data.Vel_sh_abduct(1:l_period-1) = diff(Data.ShoulderAbduction)*fs_kine;
 Data.Vel_sh_abduct(l_period) = Data.Vel_sh_abduct(l_period-1);
 Data.Vel_filt_sh_abduct = filtfilt(b,a,Data.Vel_sh_abduct);
 %% get onset & offset
-vel = Data.Vel_filt_hand_xy;
-np = find(vel == max(vel));
-pre_list = find(vel(1:np) <= 0.1 * max(vel));
-aft_list = find(vel((np+1):end) <= 0.1 * max(vel));
-if isempty(pre_list)
-    time_ini = 31;
+trigger_mid = 0.5 * (max(abs(Data.Trigger))+min(abs(Data.Trigger)));
+if mean(Data.Trigger(1:100)) >= trigger_mid
+    trigger_list = find(abs(Data.Trigger) <= trigger_mid);
 else
-    time_ini = max(31,pre_list(end));
+    trigger_list = find(abs(Data.Trigger) >= trigger_mid);
+end
+vel = Data.Vel_filt_hand_xy;
+vel_peak = find(vel(trigger_list(1):trigger_list(end)) == max(vel(trigger_list(1):trigger_list(end))));
+np = vel_peak + trigger_list(1) - 1;
+pre_list = find(vel(trigger_list(1):np) <= 0.1 * max(vel));
+aft_list = find(vel((np+1):trigger_list(end)) <= 0.1 * max(vel));
+if isempty(pre_list)
+    time_ini = trigger_list(1);
+else
+    time_ini = pre_list(end) + trigger_list(1) - 1;
 end
 if isempty(aft_list)
-    time_ter = l_period-80;
+    time_ter = trigger_list(end);
 else
-    time_ter = min(np+aft_list(1),l_period-80);
+    time_ter = np+aft_list(1);
 end
-onset = time_ini-30;
-offset = time_ter+80;
+onset = max(time_ini-30,1);
+offset = min(time_ter+80,l_period);
 %% get Period
 Period.Frame = Data.Frame(onset:offset);
 Period.Time = Data.Time(onset:offset) - Data.Time(onset);

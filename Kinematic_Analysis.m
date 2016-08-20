@@ -10,10 +10,10 @@ close all;
 % TASK = {'LR'; 'FR'};
 
 root = 'D://FES2015//Kinematics_Analysis';
-for SN_name = 13
+for SN_name = 14
     for SN_subn = SN_name
-        for SN_type = 1:2
-            for SN_time = 3
+        for SN_type = 2
+            for SN_time = [1,3]
                 for SN_side = 2
                     for SN_task = 2
                         name = NAME{SN_name};
