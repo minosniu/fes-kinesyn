@@ -138,8 +138,7 @@ print(hfig4,'-dbmp',[Figname 'arm_traj.bmp']);
 %% plot hand xy
 hfig5           =   figure;
 
-Ymin_handxy = 0-((Ymin_handx).^2+(Ymin_handy).^2).^0.5;
-Ymax_handxy = ((Ymax_handx).^2+(Ymax_handy).^2).^0.5;
+Ymax_handxy = ((max(Ymax_handx,abs(Ymin_handx))).^2+(max(Ymax_handy,abs(Ymin_handy))).^2).^0.5;
 xSize_i  = 4;   % Í¼Æ¬³¤8Ó¢´ç
 ySize_i  = 6; % ¸ß11Ó¢´ç
 xLeft_i  = 0;
@@ -155,7 +154,7 @@ for i = 1:N
 end
 hold on;
 plot(Period{N_longest}.Time,Vel_hand_ave,'Color','k','LineWidth',3);
-axis([0 Tmax Ymin_handxy Ymax_handxy])
+axis([0 Tmax -0.1 Ymax_handxy])
 
 print(hfig5,'-depsc',[Figname 'handxy_velo.eps']);
 print(hfig5,'-dbmp',[Figname 'handxy_velo.bmp']);
