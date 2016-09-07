@@ -9,8 +9,8 @@ Period = cell(N,1);
 for i = 1:N
     filename{i} = [Dir '//' ExpList{i}];
     Legend{i} = ExpList{i}(end-6:end-4);
-    Data{i} = ImportLeftData(filename{i});
-    Period{i} = FindInterPeriod(Data{i});
+    Data{i} = ImportExpData(filename{i});
+    Period{i} = FindInterPeriodNoSide(Data{i});
 end
 %% Find peak value
 Trial = cell(4*N,1);

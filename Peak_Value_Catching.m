@@ -15,11 +15,11 @@ Task_temp = cell(1);
 Trial_temp = cell(1);
 Var_temp = cell(1);
 Peak_temp = zeros(1);
-for SN_name = 5:10
+for SN_name = 5:14
     for SN_subn = SN_name
         for SN_type = 1:2
-            for SN_time = 1:2
-                for SN_side = 1:1
+            for SN_time = 1:3
+                for SN_side = 1:2
                     for SN_task = 1:2
                         name = NAME{SN_name};
                         subn = SUBN{SN_subn};
@@ -28,16 +28,18 @@ for SN_name = 5:10
                         side = SIDE{SN_side};
                         task = TASK{SN_task};
                         Dir = [root '//Kinematics_Data//' subn '_' type '_' time '_' side '_' task];
-                        [Name,Subn,Type,Time,Side,Task,Trial,Var,Peak] = PeakValueCatching(Dir,name,subn,type,time,side,task);
-                        Name_temp = [Name_temp;Name];
-                        Subn_temp = [Subn_temp;Subn];
-                        Type_temp = [Type_temp;Type];
-                        Time_temp = [Time_temp;Time];
-                        Side_temp = [Side_temp;Side];
-                        Task_temp = [Task_temp;Task];
-                        Trial_temp = [Trial_temp;Trial];
-                        Var_temp = [Var_temp;Var];
-                        Peak_temp = [Peak_temp;Peak];
+                        if exist(Dir)
+                            [Name,Subn,Type,Time,Side,Task,Trial,Var,Peak] = PeakValueCatching(Dir,name,subn,type,time,side,task);
+                            Name_temp = [Name_temp;Name];
+                            Subn_temp = [Subn_temp;Subn];
+                            Type_temp = [Type_temp;Type];
+                            Time_temp = [Time_temp;Time];
+                            Side_temp = [Side_temp;Side];
+                            Task_temp = [Task_temp;Task];
+                            Trial_temp = [Trial_temp;Trial];
+                            Var_temp = [Var_temp;Var];
+                            Peak_temp = [Peak_temp;Peak];
+                        end
                     end
                 end
             end
@@ -45,5 +47,5 @@ for SN_name = 5:10
     end
 end
 T = table(Name_temp,Subn_temp,Type_temp,Time_temp,Side_temp,Task_temp,Trial_temp,Var_temp,Peak_temp);
-csvname = [root '//PeakValue//Vel_Peak.csv'];
+csvname = [root '//PeakValue//Vel_Peak_S5_To_S14.csv'];
 writetable(T(2:end,:),csvname)
